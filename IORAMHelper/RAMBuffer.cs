@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace IORAMHelper
 {
@@ -164,31 +165,44 @@ namespace IORAMHelper
 			// Datenlänge merken
 			int len = data.Length;
 
-			// Soll überschrieben werden? => Wenn _pos an das Ende des Arrays zeigt, wird in jedem Fall nur eingefügt
-			if(overWrite && _pos < _data.Count)
+			// Bei großen List-Allokationen kann eine OutOfMemory-Exception auftreten, wenn kein hinreichend großer virtueller Speicherblock gefunden wird
+			try
 			{
-				// Es muss ein bestimmter Bereich gelöscht werden; der Löschbereich darf die Puffergrenze nicht überschreiten
-				if(_pos + len < _data.Count - 1)
+				// Soll überschrieben werden? => Wenn _pos an das Ende des Arrays zeigt, wird in jedem Fall nur eingefügt
+				if(overWrite && _pos < _data.Count)
 				{
-					// Alles OK, Bereich löschen
-					_data.RemoveRange(_pos, len);
+					// Es muss ein bestimmter Bereich gelöscht werden; der Löschbereich darf die Puffergrenze nicht überschreiten
+					if(_pos + len < _data.Count - 1)
+					{
+						// Alles OK, Bereich löschen
+						_data.RemoveRange(_pos, len);
 
-					// Daten einfügen
-					_data.InsertRange(_pos, data);
+						// Daten einfügen
+						_data.InsertRange(_pos, data);
+					}
+					else
+					{
+						// Nur bis zum Listenende löschen
+						_data.RemoveRange(_pos, _data.Count - _pos);
+
+
+						// Daten anhängen
+						_data.AddRange(data);
+					}
 				}
 				else
 				{
-					// Nur bis zum Listenende löschen
-					_data.RemoveRange(_pos, _data.Count - _pos);
-
 					// Daten anhängen
 					_data.AddRange(data);
 				}
 			}
-			else
+			catch(OutOfMemoryException)
 			{
-				// Daten anhängen
-				_data.AddRange(data);
+				// Fehlermeldung ausgeben
+				MessageBox.Show("Schwerwiegender Fehler: Es kann kein hinreichend großer virtueller Speicherblock allokiert werden.\nVersuchen Sie ungespeicherte Änderungen zu sichern und starten Sie das Programm neu, da möglicherweise ein instabiler Zustand besteht.\n\nVielleicht hilft es, das Programm im 64-Bit-Modus auszuführen?", "Fehler bei Allokation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				// Puffer leeren, damit die Meldung nicht noch x-mal auftaucht - der Schaden ist eh schon angerichtet
+				_data.Clear();
 			}
 
 			// Die Position um die Datenlänge erhöhen
