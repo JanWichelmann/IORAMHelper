@@ -74,7 +74,7 @@ namespace IORAMHelper
 			byte[] buffer;
 
 			// Datei laden
-			using(BinaryReader r = new BinaryReader(File.Open(filename, FileMode.Open)))
+			using(BinaryReader r = new BinaryReader(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
 			{
 				// Puffer initialisieren
 				buffer = new byte[r.BaseStream.Length];
@@ -228,7 +228,7 @@ namespace IORAMHelper
 		public void Save(string filename)
 		{
 			// Datei öffnen
-			using(BinaryWriter w = new BinaryWriter(File.Open(filename, FileMode.Create, FileAccess.Write, FileShare.None)))
+			using(BinaryWriter w = new BinaryWriter(File.Open(filename, FileMode.Create, FileAccess.Write, FileShare.Write)))
 			{
 				// Daten schreiben
 				w.Write(_data.ToArray<byte>());
