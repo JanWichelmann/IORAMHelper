@@ -185,7 +185,6 @@ namespace IORAMHelper
 						// Nur bis zum Listenende löschen
 						_data.RemoveRange(_pos, _data.Count - _pos);
 
-
 						// Daten anhängen
 						_data.AddRange(data);
 					}

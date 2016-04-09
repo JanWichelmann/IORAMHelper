@@ -324,7 +324,7 @@ namespace IORAMHelper
 				return d2;
 			}
 
-			for(; ; )
+			for(;;)
 			{
 				if(cword_val == 1)
 				{
