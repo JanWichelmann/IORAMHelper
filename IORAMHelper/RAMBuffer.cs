@@ -209,6 +209,59 @@ namespace IORAMHelper
 		}
 
 		/// <summary>
+		/// Schreibt die Daten aus dem gegebenen Puffer in diese Instanz.
+		/// </summary>
+		/// <param name="buffer">Der Puffer mit den zu schreibenden Daten.</param>
+		/// <param name="overWrite">Legt fest, ob die Daten im Puffer mit den neuen Daten überschrieben werden sollen.</param>
+		public void Write(RAMBuffer buffer, bool overWrite = true)
+		{
+			// Datenlänge merken
+			int len = buffer.Length;
+
+			// Bei großen List-Allokationen kann eine OutOfMemory-Exception auftreten, wenn kein hinreichend großer virtueller Speicherblock gefunden wird
+			try
+			{
+				// Soll überschrieben werden? => Wenn _pos an das Ende des Arrays zeigt, wird in jedem Fall nur eingefügt
+				if(overWrite && _pos < _data.Count)
+				{
+					// Es muss ein bestimmter Bereich gelöscht werden; der Löschbereich darf die Puffergrenze nicht überschreiten
+					if(_pos + len < _data.Count - 1)
+					{
+						// Alles OK, Bereich löschen
+						_data.RemoveRange(_pos, len);
+
+						// Daten einfügen
+						_data.InsertRange(_pos, buffer._data);
+					}
+					else
+					{
+						// Nur bis zum Listenende löschen
+						_data.RemoveRange(_pos, _data.Count - _pos);
+
+						// Daten anhängen
+						_data.AddRange(buffer._data);
+					}
+				}
+				else
+				{
+					// Daten anhängen
+					_data.AddRange(buffer._data);
+				}
+			}
+			catch(OutOfMemoryException)
+			{
+				// Fehlermeldung ausgeben
+				MessageBox.Show("Schwerwiegender Fehler: Es kann kein hinreichend großer virtueller Speicherblock allokiert werden.\nVersuchen Sie ungespeicherte Änderungen zu sichern und starten Sie das Programm neu, da möglicherweise ein instabiler Zustand besteht.\n\nVielleicht hilft es, das Programm im 64-Bit-Modus auszuführen?", "Fehler bei Allokation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				// Puffer leeren, damit die Meldung nicht noch x-mal auftaucht - der Schaden ist eh schon angerichtet
+				_data.Clear();
+			}
+
+			// Die Position um die Datenlänge erhöhen
+			_pos += len;
+		}
+
+		/// <summary>
 		/// Löscht alle enthaltenen Daten und setzt alle Statusvariablen zurück.
 		/// </summary>
 		public void Clear()
