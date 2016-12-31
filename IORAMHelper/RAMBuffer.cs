@@ -16,7 +16,7 @@ namespace IORAMHelper
 		/// <summary>
 		/// Die enthaltenen Bytedaten.
 		/// </summary>
-		private List<byte> _data;
+		private readonly List<byte> _data;
 
 		/// <summary>
 		/// Die aktuelle Position im Puffer.
@@ -26,7 +26,7 @@ namespace IORAMHelper
 		/// <summary>
 		/// Hilfsarray für die internen Konvertierungsoperationen. Es hat immer die Länge 8. In dieses kann beliebig geschrieben werden.
 		/// </summary>
-		private byte[] _internalHelpBuffer = new byte[8];
+		private readonly byte[] _internalHelpBuffer = new byte[8];
 
 		/// <summary>
 		/// Erstellt ein neues RAMBuffer-Objekt.
