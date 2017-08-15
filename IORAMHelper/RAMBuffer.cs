@@ -102,7 +102,7 @@ namespace IORAMHelper
 			if(_pos == _data.Count || _pos + length > _data.Count)
 			{
 				// Es können keine Daten gelesen werden, Exception auslösen
-				throw new IndexOutOfRangeException("Es können keine " + length + " Bytes aus dem Puffer gelesen werden: Entweder ist der Puffer leer oder der Lesezeiger am Pufferende angekommen.");
+				throw new IndexOutOfRangeException("Error reading " + length + " bytes from buffer: Not enough bytes to read until buffer ends.");
 			}
 
 			// Puffer sicherheitshalber initialisieren
