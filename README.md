@@ -1,0 +1,1 @@
+This class provides helper functions for fast and concise reading and writing of binary files.

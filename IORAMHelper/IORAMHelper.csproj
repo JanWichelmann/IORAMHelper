@@ -93,10 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMemory.cs" />
-    <Compile Include="LessRAMDict.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickLZ.cs" />
     <Compile Include="RAMBuffer.cs" />
   </ItemGroup>
   <ItemGroup>
